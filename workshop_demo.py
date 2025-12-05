@@ -247,7 +247,19 @@ with tab_clustering:
             y=y_3d,
             z=z_3d,
             color='Segmen',
-            # ... sisa kode plot 3D ...
+            hover_data=['model', 'brand_name', 'price', 'rating', 'RAM', 'ROM'],
+            title=f'Visualisasi Segmen Pasar: {x_3d} vs {y_3d} vs {z_3d}',
+            labels={
+                x_3d: x_3d.replace('_', ' ').title(),
+                y_3d: y_3d.replace('_', ' ').title(),
+                z_3d: z_3d.replace('_', ' ').title(),
+            },
+            height=700,
+            template='plotly_white'
+        )
+        st.plotly_chart(fig_3d, width='stretch')
+
+        st.markdown("---")
 
 # Distribusi Brand per Cluster
         st.subheader("Distribusi Brand di Setiap Segmen")
@@ -265,6 +277,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
