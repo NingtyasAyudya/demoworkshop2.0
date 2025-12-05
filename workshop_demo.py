@@ -77,7 +77,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("📱 Dashboard Analisis dan Segmentasi Smartphone")
+st.title("Dashboard Analisis dan Segmentasi Smartphone")
 st.markdown("Eksplorasi interaktif performa, harga, dan spesifikasi *smartphone* berdasarkan dataset.")
 
 # Memuat dan mempersiapkan data
@@ -89,7 +89,7 @@ if df_raw.empty:
 # --- SIDEBAR: KONTROL DAN FILTER ---
 
 with st.sidebar:
-    st.header("⚙️ Kontrol Data & Analisis")
+    st.header("Kontrol Data & Analisis")
 
    # Filter Brand
     all_brands_in_data = sorted(df_raw['brand_name'].unique().tolist())
@@ -136,7 +136,7 @@ with st.sidebar:
 
 # --- TAB UTAMA ---
 
-tab_eksplorasi, tab_clustering = st.tabs(["📊 Eksplorasi Data Interaktif", "🔬 Hasil Clustering (Segmentasi)"])
+tab_eksplorasi, tab_clustering = st.tabs(["Eksplorasi Data Interaktif", "Hasil Clustering (Segmentasi)"])
 
 # =========================================================================
 # TAB 1: EKSPLORASI DATA INTERAKTIF
@@ -170,7 +170,7 @@ with tab_eksplorasi:
     )
     fig_price.update_layout(xaxis_title="Harga (USD)", yaxis_title="Jumlah Model")
     col2.metric("Jumlah Model Terfilter", len(df_price_filtered))
-    st.plotly_chart(fig_price, use_container_width=True)
+    st.plotly_chart(fig_price, width='stretch')
 
     st.markdown("---")
 
@@ -202,7 +202,7 @@ with tab_eksplorasi:
         height=600,
         template='plotly_white'
     )
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    st.plotly_chart(fig_scatter, width='stretch')
 
 
 # =========================================================================
@@ -222,7 +222,7 @@ with tab_clustering:
         cluster_summary = cluster_summary.round(2)
 
         st.subheader("Ringkasan Rata-rata Spesifikasi per Segmen")
-        st.dataframe(cluster_summary, use_container_width=True, hide_index=True)
+        st.dataframe(cluster_summary, width='stretch', hide_index=True)
 
         st.markdown("---")
 
@@ -255,7 +255,7 @@ with tab_clustering:
             height=700,
             template='plotly_white'
         )
-        st.plotly_chart(fig_3d, use_container_width=True)
+        st.plotly_chart(fig_3d, width='stretch')
 
         st.markdown("---")
 
@@ -274,7 +274,7 @@ with tab_clustering:
             height=500,
             template='plotly_white'
         )
-        st.plotly_chart(fig_brand_dist, use_container_width=True)
+        st.plotly_chart(fig_brand_dist, width='stretch')
 
     else:
         st.warning("Silakan klik tombol 'Jalankan Clustering' di sidebar untuk melihat hasil segmentasi.")
@@ -283,5 +283,6 @@ with tab_clustering:
 st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
-    st.dataframe(df_raw, use_container_width=True)
+    st.dataframe(df_raw, width='stretch')
+
 
