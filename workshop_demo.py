@@ -262,21 +262,33 @@ with tab_clustering:
         st.markdown("---")
 
 # Distribusi Brand per Cluster
+       # ... (bagian ringkasan spesifikasi, plot 3d, dst.)
+
+        # Distribusi Brand per Cluster
         st.subheader("Distribusi Brand di Setiap Segmen")
-        # Menggunakan kolom 'Segmen' yang sudah dibuat
         df_brand_cluster = df_raw.groupby(['Segmen', 'brand_name']).size().reset_index(name='Jumlah')
-        # df_brand_cluster['Segmen'] = 'Segmen ' + (df_brand_cluster['Segmen']).astype(str) # Baris ini tidak lagi diperlukan
         
-        # ... sisa kode plot bar ...
+        # --- HAPUS ATAU KOMENTARI BARIS BERIKUT ---
+        # df_brand_cluster['Segmen'] = 'Segmen ' + (df_brand_cluster['Segmen']).astype(str) 
+        # ------------------------------------------
 
-    else:
-        st.warning("Silakan klik tombol 'Jalankan Clustering' di sidebar untuk melihat hasil segmentasi.")
-
+        fig_brand_dist = px.bar(
+            df_brand_cluster,
+            x='Segmen',
+            y='Jumlah',
+            color='brand_name',
+            title='Kontribusi Merek di Setiap Segmen',
+            labels={'Segmen': 'Segmen Pasar', 'Jumlah': 'Jumlah Model', 'brand_name': 'Merek'},
+            height=500,
+            template='plotly_white'
+        )
+        st.plotly_chart(fig_brand_dist, width='stretch')
 # --- DISPLAY RAW DATA (opsional) ---
 st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
