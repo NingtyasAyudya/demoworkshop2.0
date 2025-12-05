@@ -214,11 +214,15 @@ with tab_clustering:
 
     if 'Cluster' in df_raw.columns and df_raw['Cluster'].nunique() > 1:
         st.info("Visualisasi ini menunjukkan smartphone yang sudah diberi label cluster, berdasarkan data yang sudah di-scale.")
+        
+        # --- PERBAIKAN DILAKUKAN DI SINI ---
+        # 1. Pastikan kolom 'Segmen' ada di df_raw
+        df_raw['Segmen'] = 'Segmen ' + (df_raw['Cluster'] + 1).astype(str)
+        # --- AKHIR PERBAIKAN ---
 
         # Menghitung Rata-rata Spesifikasi per Cluster
-        cluster_summary = df_raw.groupby('Cluster')[['price', 'rating', 'RAM', 'ROM', 'Battery', 'Fast_Charging', 'screen_size']].mean().reset_index()
-        # Mengubah nama kolom Cluster menjadi Segmen
-        cluster_summary['Cluster'] = 'Segmen ' + (cluster_summary['Cluster'] + 1).astype(str)
+        cluster_summary = df_raw.groupby('Segmen')[['price', 'rating', 'RAM', 'ROM', 'Battery', 'Fast_Charging', 'screen_size']].mean().reset_index()
+        # cluster_summary['Cluster'] = 'Segmen ' + (cluster_summary['Cluster'] + 1).astype(str) # Baris ini tidak lagi diperlukan
         cluster_summary = cluster_summary.round(2)
 
         st.subheader("Ringkasan Rata-rata Spesifikasi per Segmen")
@@ -236,45 +240,22 @@ with tab_clustering:
         z_3d = col5.selectbox("Sumbu Z (3D)", options=clustering_cols, index=2)
 
         # Plot 3D menggunakan data yang belum di-scale (lebih mudah dibaca)
-        df_plot_3d = df_raw.copy()
-        df_plot_3d['Segmen'] = 'Segmen ' + (df_plot_3d['Cluster'] + 1).astype(str)
-
+        # Cukup gunakan df_raw karena 'Segmen' sudah ada.
         fig_3d = px.scatter_3d(
-            df_plot_3d,
+            df_raw, # Menggunakan df_raw yang sudah memiliki kolom 'Segmen'
             x=x_3d,
             y=y_3d,
             z=z_3d,
             color='Segmen',
-            hover_data=['model', 'brand_name', 'price', 'rating', 'RAM', 'ROM'],
-            title=f'Visualisasi Segmen Pasar: {x_3d} vs {y_3d} vs {z_3d}',
-            labels={
-                x_3d: x_3d.replace('_', ' ').title(),
-                y_3d: y_3d.replace('_', ' ').title(),
-                z_3d: z_3d.replace('_', ' ').title(),
-            },
-            height=700,
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_3d, width='stretch')
+            # ... sisa kode plot 3D ...
 
-        st.markdown("---")
-
-        # Distribusi Brand per Cluster
+# Distribusi Brand per Cluster
         st.subheader("Distribusi Brand di Setiap Segmen")
+        # Menggunakan kolom 'Segmen' yang sudah dibuat
         df_brand_cluster = df_raw.groupby(['Segmen', 'brand_name']).size().reset_index(name='Jumlah')
-        df_brand_cluster['Segmen'] = 'Segmen ' + (df_brand_cluster['Segmen']).astype(str)
-
-        fig_brand_dist = px.bar(
-            df_brand_cluster,
-            x='Segmen',
-            y='Jumlah',
-            color='brand_name',
-            title='Kontribusi Merek di Setiap Segmen',
-            labels={'Segmen': 'Segmen Pasar', 'Jumlah': 'Jumlah Model', 'brand_name': 'Merek'},
-            height=500,
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_brand_dist, width='stretch')
+        # df_brand_cluster['Segmen'] = 'Segmen ' + (df_brand_cluster['Segmen']).astype(str) # Baris ini tidak lagi diperlukan
+        
+        # ... sisa kode plot bar ...
 
     else:
         st.warning("Silakan klik tombol 'Jalankan Clustering' di sidebar untuk melihat hasil segmentasi.")
@@ -284,5 +265,6 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
