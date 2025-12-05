@@ -158,7 +158,11 @@ tab_eksplorasi, tab_clustering = st.tabs(["Eksplorasi Data Interaktif", "Hasil C
 
 with tab_eksplorasi:
     st.header("Visualisasi Data Terfilter")
-
+    
+#jika data filter kosong
+if df_filtered.empty:
+        st.warning("⚠️ Mohon pilih minimal 1 Brand (Merek) di sidebar untuk melihat data eksplorasi.")
+    else:
     # 1. Distribusi Harga
     st.subheader("1. Distribusi Harga Smartphone")
     col1, col2 = st.columns(2)
@@ -302,6 +306,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
