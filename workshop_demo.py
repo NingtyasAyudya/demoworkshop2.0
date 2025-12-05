@@ -168,7 +168,7 @@ with tab_eksplorasi:
         height=400,
         template='plotly_white'
     )
-    fig_price.update_layout(xaxis_title="Harga (Rp)", yaxis_title="Jumlah Model")
+    fig_price.update_layout(xaxis_title="Harga (USD)", yaxis_title="Jumlah Model")
     col2.metric("Jumlah Model Terfilter", len(df_price_filtered))
     st.plotly_chart(fig_price, use_container_width=True)
 
@@ -284,3 +284,4 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, use_container_width=True)
+
