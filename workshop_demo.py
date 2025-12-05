@@ -106,16 +106,17 @@ with st.sidebar:
         default=safe_defaults if safe_defaults else all_brands_in_data[:4] 
     )
 
+    # ... (kode sebelum blok filter)
+
     if 'Semua' in selected_brands:
         df_filtered = df_raw.copy()
     else:
-        df_filtered = df_raw[df_raw['brand_name'].isin(selected_brands)]
+        df_filtered = df_raw[df_raw['brand_name'].isin(selected_brands)].copy() # Tambahkan .copy() di sini
 
     st.markdown("---")
 
     # Kontrol Clustering
     st.header("🔬 Analisis Clustering (K-Means)")
-    # Elbow method dari notebook menyarankan 3-5 cluster. Kita default 3.
     n_clusters = st.slider("Jumlah Cluster (Segmen)", min_value=2, max_value=8, value=3)
 
     if st.button("Jalankan Clustering"):
@@ -125,13 +126,26 @@ with st.sidebar:
             with st.spinner(f'Menjalankan K-Means dengan {n_clusters} cluster...'):
                 df_raw['Cluster'], silhouette = run_kmeans(df_scaled.copy(), n_clusters)
                 st.success(f"Clustering Selesai! Silhouette Score: {silhouette:.4f}")
-                # Update data yang difilter agar memiliki kolom Cluster
-                df_filtered = df_raw[df_raw['brand_name'].isin(selected_brands) if 'Semua' not in selected_brands else df_raw].copy()
+                
+                # --- PERBAIKAN PENTING UNTUK UPDATE df_filtered ---
+                if 'Semua' in selected_brands:
+                    df_filtered = df_raw.copy()
+                else:
+                    # Menggunakan brand_name dari df_raw karena sudah ada kolom Cluster
+                    df_filtered = df_raw[df_raw['brand_name'].isin(selected_brands)].copy() 
+                # --------------------------------------------------
     else:
         # Jika tombol belum diklik, tetapkan cluster ke dummy atau hasil sebelumnya jika ada
         if 'Cluster' not in df_raw.columns:
              df_raw['Cluster'] = 0
-        df_filtered = df_raw[df_raw['brand_name'].isin(selected_brands) if 'Semua' not in selected_brands else df_raw].copy()
+             
+        # --- PERBAIKAN PENTING DI SINI (JIKA TOMBOL BELUM DIKLIK) ---
+        if 'Semua' in selected_brands:
+            df_filtered = df_raw.copy()
+        else:
+            # Pastikan df_filtered selalu diperbarui dengan data cluster jika sudah ada
+            df_filtered = df_raw[df_raw['brand_name'].isin(selected_brands)].copy()
+        # -----------------------------------------------------------
 
 
 # --- TAB UTAMA ---
@@ -288,6 +302,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
