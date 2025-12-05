@@ -150,7 +150,7 @@ with tab_eksplorasi:
     col1, col2 = st.columns(2)
     min_price, max_price = int(df_filtered['price'].min()), int(df_filtered['price'].max())
     price_range = col1.slider(
-        "Rentang Harga (Rp)",
+        "Rentang Harga (USD)",
         min_value=0,
         max_value=int(df_raw['price'].max()),
         value=(min_price, max_price),
@@ -163,7 +163,7 @@ with tab_eksplorasi:
         x='price',
         color='brand_name',
         title=f'Distribusi Harga ({len(df_price_filtered)} Smartphone)',
-        labels={'price': 'Harga (Rp)'},
+        labels={'price': 'Harga (USD)'},
         nbins=50,
         height=400,
         template='plotly_white'
@@ -282,4 +282,5 @@ with tab_clustering:
 # --- DISPLAY RAW DATA (opsional) ---
 st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
+
     st.dataframe(df_raw, use_container_width=True)
