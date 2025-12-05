@@ -158,69 +158,72 @@ tab_eksplorasi, tab_clustering = st.tabs(["Eksplorasi Data Interaktif", "Hasil C
 
 with tab_eksplorasi:
     st.header("Visualisasi Data Terfilter")
-    
-#jika data filter kosong
-if df_filtered.empty:
+
+    # --- PERBAIKAN: TAMBAHKAN PENGECEKAN DATA KOSONG ---
+    if df_filtered.empty:
         st.warning("⚠️ Mohon pilih minimal 1 Brand (Merek) di sidebar untuk melihat data eksplorasi.")
     else:
-    # 1. Distribusi Harga
-    st.subheader("1. Distribusi Harga Smartphone")
-    col1, col2 = st.columns(2)
-    min_price, max_price = int(df_filtered['price'].min()), int(df_filtered['price'].max())
-    price_range = col1.slider(
-        "Rentang Harga (USD)",
-        min_value=0,
-        max_value=int(df_raw['price'].max()),
-        value=(min_price, max_price),
-        step=5000
-    )
-    df_price_filtered = df_filtered[(df_filtered['price'] >= price_range[0]) & (df_filtered['price'] <= price_range[1])]
+    # --- SELURUH KODE VISUALISASI SEKARANG BERADA DI DALAM BLOK 'ELSE' INI ---
+        # 1. Distribusi Harga
+        st.subheader("1. Distribusi Harga Smartphone")
+        col1, col2 = st.columns(2)
+        
+        # Bagian ini sekarang aman karena df_filtered tidak kosong
+        min_price, max_price = int(df_filtered['price'].min()), int(df_filtered['price'].max())
+        price_range = col1.slider(
+            "Rentang Harga (USD)",
+            min_value=0,
+            max_value=int(df_raw['price'].max()),
+            value=(min_price, max_price),
+            step=5000
+        )
+        df_price_filtered = df_filtered[(df_filtered['price'] >= price_range[0]) & (df_filtered['price'] <= price_range[1])]
 
-    fig_price = px.histogram(
-        df_price_filtered,
-        x='price',
-        color='brand_name',
-        title=f'Distribusi Harga ({len(df_price_filtered)} Smartphone)',
-        labels={'price': 'Harga (USD)'},
-        nbins=50,
-        height=400,
-        template='plotly_white'
-    )
-    fig_price.update_layout(xaxis_title="Harga (USD)", yaxis_title="Jumlah Model")
-    col2.metric("Jumlah Model Terfilter", len(df_price_filtered))
-    st.plotly_chart(fig_price, width='stretch')
+        fig_price = px.histogram(
+            df_price_filtered,
+            x='price',
+            color='brand_name',
+            title=f'Distribusi Harga ({len(df_price_filtered)} Smartphone)',
+            labels={'price': 'Harga (USD)'},
+            nbins=50,
+            height=400,
+            template='plotly_white'
+        )
+        fig_price.update_layout(xaxis_title="Harga (USD)", yaxis_title="Jumlah Model")
+        col2.metric("Jumlah Model Terfilter", len(df_price_filtered))
+        st.plotly_chart(fig_price, width='stretch')
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # 2. Scatter Plot Interaktif: Harga vs Rating
-    st.subheader("2. Perbandingan Harga, Rating, dan Spesifikasi")
+        # 2. Scatter Plot Interaktif: Harga vs Rating
+        st.subheader("2. Perbandingan Harga, Rating, dan Spesifikasi")
 
-    y_options = {
-        'Rating': 'rating',
-        'Kapasitas Baterai (mAh)': 'Battery',
-        'Kapasitas RAM (GB)': 'RAM',
-        'Kecepatan Fast Charging (W)': 'Fast_Charging'
-    }
+        y_options = {
+            'Rating': 'rating',
+            'Kapasitas Baterai (mAh)': 'Battery',
+            'Kapasitas RAM (GB)': 'RAM',
+            'Kecepatan Fast Charging (W)': 'Fast_Charging'
+        }
 
-    x_col = st.selectbox("Sumbu X (Variabel Penentu)", options=clustering_cols, index=0)
-    y_col_name = st.selectbox("Sumbu Y (Metrik Perbandingan)", options=list(y_options.keys()), index=0)
-    y_col = y_options.get(y_col_name, 'rating')
+        x_col = st.selectbox("Sumbu X (Variabel Penentu)", options=clustering_cols, index=0)
+        y_col_name = st.selectbox("Sumbu Y (Metrik Perbandingan)", options=list(y_options.keys()), index=0)
+        y_col = y_options.get(y_col_name, 'rating')
 
-    size_col = st.selectbox("Ukuran Gelembung (Size)", options=['ROM', 'screen_size', 'Fast_Charging', 'price'], index=0)
+        size_col = st.selectbox("Ukuran Gelembung (Size)", options=['ROM', 'screen_size', 'Fast_Charging', 'price'], index=0)
 
-    fig_scatter = px.scatter(
-        df_price_filtered,
-        x=x_col,
-        y=y_col,
-        color='brand_name',
-        size=size_col,
-        hover_data=['model', 'price', 'rating', 'RAM', 'ROM', 'Battery'],
-        title=f'{y_col_name} vs {x_col} (Ukuran: {size_col})',
-        labels={x_col: x_col.replace('_', ' ').title(), y_col: y_col_name},
-        height=600,
-        template='plotly_white'
-    )
-    st.plotly_chart(fig_scatter, width='stretch')
+        fig_scatter = px.scatter(
+            df_price_filtered,
+            x=x_col,
+            y=y_col,
+            color='brand_name',
+            size=size_col,
+            hover_data=['model', 'price', 'rating', 'RAM', 'ROM', 'Battery'],
+            title=f'{y_col_name} vs {x_col} (Ukuran: {size_col})',
+            labels={x_col: x_col.replace('_', ' ').title(), y_col: y_col_name},
+            height=600,
+            template='plotly_white'
+        )
+        st.plotly_chart(fig_scatter, width='stretch')
 
 
 # =========================================================================
@@ -306,6 +309,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
