@@ -224,10 +224,9 @@ with tab_eksplorasi:
             template='plotly_white'
         )
     fig_price.update_layout(xaxis_title="Harga (USD)", yaxis_title="Jumlah Model")
-        col2.metric("Jumlah Model Terfilter", len(df_price_filtered))
-        st.plotly_chart(fig_price, width='stretch')
-
-        st.markdown("---")
+    col2.metric("Jumlah Model Terfilter", len(df_price_filtered))
+    st.plotly_chart(fig_price, width='stretch')
+    st.markdown("---")
 
         # 2. Scatter Plot Interaktif: Harga vs Rating
         st.subheader("2. Perbandingan Harga, Rating, dan Spesifikasi")
@@ -343,6 +342,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
