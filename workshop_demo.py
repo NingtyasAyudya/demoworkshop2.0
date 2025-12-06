@@ -213,7 +213,7 @@ with tab_eksplorasi:
     # Inisialisasi placeholder figure
     fig_price = px.scatter(title="Pilih Merek atau Sesuaikan Filter Harga")
     fig_scatter = px.scatter(title="Pilih Merek atau Sesuaikan Filter Harga") 
-        fig_price = px.histogram(
+    fig_price = px.histogram(
             df_price_filtered,
             x='price',
             color='brand_name',
@@ -343,6 +343,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
