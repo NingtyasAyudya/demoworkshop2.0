@@ -27,9 +27,16 @@ def load_and_prepare_data(filepath):
     # Mengganti nama kolom untuk kejelasan
     df = df.rename(columns={'ram_capacity': 'RAM', 'rom_capacity': 'ROM', 'battery_capacity': 'Battery', 'fast_charging_capacity': 'Fast_Charging'})
 
+    # --- PERBAIKAN: KONVERSI HARGA DARI INR KE USD ---
+    # Berdasarkan notebook, harga dikonversi ke USD. 
+    # Menggunakan kurs asumsi 1 USD = 82 INR (kurs perkiraan yang umum)
+    EXCHANGE_RATE_INR_TO_USD = 82 
+    df['price'] = df['price'] / EXCHANGE_RATE_INR_TO_USD
+    # --- END PERBAIKAN ---
+    
     # Pembersihan dasar (sama dengan yang ada di notebook)
     df = df.dropna(subset=['price', 'rating', 'RAM', 'ROM', 'Battery', 'Fast_Charging', 'screen_size'])
-    df = df[df['price'] > 10000] # Hanya ambil smartphone yang harganya lebih dari 10000 (untuk memfilter outlier harga sangat rendah)
+    df = df[df['price'] > 10000 / EXCHANGE_RATE_INR_TO_USD] # Hanya ambil smartphone yang harganya lebih dari 10000 (untuk memfilter outlier harga sangat rendah)
     df = df.copy() # Hindari SettingWithCopyWarning
 
     # Mengubah tipe data RAM, ROM, Fast_Charging, Battery ke numerik (Float)
@@ -309,6 +316,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
