@@ -179,17 +179,40 @@ with tab_eksplorasi:
         st.subheader("1. Distribusi Harga Smartphone")
         col1, col2 = st.columns(2)
         
-        # Bagian ini sekarang aman karena df_filtered tidak kosong
-        min_price, max_price = int(df_filtered['price'].min()), int(df_filtered['price'].max())
-        price_range = col1.slider(
-            "Rentang Harga (USD)",
-            min_value=0,
-            max_value=int(df_raw['price'].max()),
-            value=(min_price, max_price),
-            step=5000
-        )
-        df_price_filtered = df_filtered[(df_filtered['price'] >= price_range[0]) & (df_filtered['price'] <= price_range[1])]
+        # 1. Tentukan Nilai Default Slider berdasarkan filter brand
+    if not df_filtered.empty:
+        current_min_price = round(df_filtered['price'].min(), 0)
+        current_max_price = round(df_filtered['price'].max(), 0)
+        
+        # Atur nilai slider default. Jika rentang terlalu sempit (< $100), gunakan rentang luas.
+        if (current_max_price - current_min_price) < 100:
+            default_price_range = (0.0, current_max_price)
+        else:
+            default_price_range = (current_min_price, current_max_price)
+    else:
+        # Fallback jika tidak ada merek yang dipilih
+        st.warning("Peringatan: Brand yang dipilih tidak memiliki data. Menampilkan semua data.")
+        # Fallback ke rentang harga global
+        df_filtered = df_raw.copy() 
+        default_price_range = (0.0, max_overall_price)
 
+    # 2. Definisikan Slider HARGA secara UNCONDITIONAL dengan KEY unik. (FIX)
+    price_range = col1.slider(
+        "Rentang Harga (USD)",
+        min_value=0.0,
+        max_value=max_overall_price,
+        # 'value' akan digunakan sebagai nilai awal, tetapi diabaikan jika user sudah berinteraksi
+        value=default_price_range, 
+        step=10.0,
+        key='price_range_slider' # FIX: Tambahkan KEY unik
+    )
+
+    # Terapkan filter harga
+    df_price_filtered = df_filtered[(df_filtered['price'] >= price_range[0]) & (df_filtered['price'] <= price_range[1])]
+    
+    # Inisialisasi placeholder figure
+    fig_price = px.scatter(title="Pilih Merek atau Sesuaikan Filter Harga")
+    fig_scatter = px.scatter(title="Pilih Merek atau Sesuaikan Filter Harga") 
         fig_price = px.histogram(
             df_price_filtered,
             x='price',
@@ -320,6 +343,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
