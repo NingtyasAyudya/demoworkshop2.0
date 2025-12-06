@@ -229,34 +229,34 @@ with tab_eksplorasi:
     st.markdown("---")
 
         # 2. Scatter Plot Interaktif: Harga vs Rating
-        st.subheader("2. Perbandingan Harga, Rating, dan Spesifikasi")
+    st.subheader("2. Perbandingan Harga, Rating, dan Spesifikasi")
 
-        y_options = {
-            'Rating': 'rating',
-            'Kapasitas Baterai (mAh)': 'Battery',
-            'Kapasitas RAM (GB)': 'RAM',
-            'Kecepatan Fast Charging (W)': 'Fast_Charging'
-        }
+    y_options = {
+        'Rating': 'rating',
+        'Kapasitas Baterai (mAh)': 'Battery',
+        'Kapasitas RAM (GB)': 'RAM',
+        'Kecepatan Fast Charging (W)': 'Fast_Charging'
+    }
 
-        x_col = st.selectbox("Sumbu X (Variabel Penentu)", options=clustering_cols, index=0)
-        y_col_name = st.selectbox("Sumbu Y (Metrik Perbandingan)", options=list(y_options.keys()), index=0)
-        y_col = y_options.get(y_col_name, 'rating')
+    x_col = st.selectbox("Sumbu X (Variabel Penentu)", options=clustering_cols, index=0)
+    y_col_name = st.selectbox("Sumbu Y (Metrik Perbandingan)", options=list(y_options.keys()), index=0)
+    y_col = y_options.get(y_col_name, 'rating')
 
-        size_col = st.selectbox("Ukuran Gelembung (Size)", options=['ROM', 'screen_size', 'Fast_Charging', 'price'], index=0)
+    size_col = st.selectbox("Ukuran Gelembung (Size)", options=['ROM', 'screen_size', 'Fast_Charging', 'price'], index=0)
 
-        fig_scatter = px.scatter(
-            df_price_filtered,
-            x=x_col,
-            y=y_col,
-            color='brand_name',
-            size=size_col,
-            hover_data=['model', 'price', 'rating', 'RAM', 'ROM', 'Battery'],
-            title=f'{y_col_name} vs {x_col} (Ukuran: {size_col})',
-            labels={x_col: x_col.replace('_', ' ').title(), y_col: y_col_name},
-            height=600,
-            template='plotly_white'
-        )
-        st.plotly_chart(fig_scatter, width='stretch')
+    fig_scatter = px.scatter(
+        df_price_filtered,
+        x=x_col,
+        y=y_col,
+        color='brand_name',
+        size=size_col,
+        hover_data=['model', 'price', 'rating', 'RAM', 'ROM', 'Battery'],
+        title=f'{y_col_name} vs {x_col} (Ukuran: {size_col})',
+        labels={x_col: x_col.replace('_', ' ').title(), y_col: y_col_name},
+        height=600,
+        template='plotly_white'
+    )
+    st.plotly_chart(fig_scatter, width='stretch')
 
 
 # =========================================================================
@@ -342,6 +342,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
