@@ -131,7 +131,11 @@ with st.sidebar:
             st.warning("Jumlah cluster harus minimal 2.")
         else:
             with st.spinner(f'Menjalankan K-Means dengan {n_clusters} cluster...'):
-                df_raw['Cluster'], silhouette = run_kmeans(df_scaled.copy(), n_clusters)
+                cluster_labels, silhouette = run_kmeans(df_scaled.copy(), n_clusters)
+                # Assign labels ke df_raw yang asli
+                df_raw['Cluster'] = cluster_labels
+                st.session_state['clustering_done'] = True 
+                st.session_state['n_clusters'] = n_clusters 
                 st.success(f"Clustering Selesai! Silhouette Score: {silhouette:.4f}")
                 
                 # --- PERBAIKAN PENTING UNTUK UPDATE df_filtered ---
@@ -316,6 +320,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
