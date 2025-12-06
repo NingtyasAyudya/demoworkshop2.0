@@ -123,7 +123,7 @@ with st.sidebar:
     st.markdown("---")
 
     # Kontrol Clustering
-    st.header("🔬 Analisis Clustering (K-Means)")
+    st.header("Analisis Clustering (K-Means)")
     n_clusters = st.slider("Jumlah Cluster (Segmen)", min_value=2, max_value=8, value=3)
 
     if st.button("Jalankan Clustering"):
@@ -316,6 +316,7 @@ st.markdown("---")
 if st.checkbox("Tampilkan Data Mentah/Hasil (Tabel)"):
 
     st.dataframe(df_raw, width='stretch')
+
 
 
 
